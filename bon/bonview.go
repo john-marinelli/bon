@@ -82,7 +82,9 @@ func NewBonView(notes []dstructs.Note, err error) BonView {
 
 	v := components.NewNoteViewer()
 
-	nl := components.NewNoteList(notes, width/2, height)
+	nl := components.NewNoteList(notes, (width/2)-2, height, func(w int) int {
+		return (w / 2) - 2
+	})
 
 	arch := BonView{
 		picker:      p,
@@ -91,7 +93,7 @@ func NewBonView(notes []dstructs.Note, err error) BonView {
 		list:        nl,
 		focused:     types.PickerMode,
 		listStyle:   lipgloss.NewStyle().Width((width / 2) - 2).Height(height - 2),
-		pickerStyle: lipgloss.NewStyle().Width((width / 2) - 2).Height(height - 2),
+		pickerStyle: lipgloss.NewStyle().Width((width / 2) - 2).Height(height - 4),
 		err:         err,
 	}
 
@@ -148,11 +150,11 @@ func (a BonView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		}
 	case tea.WindowSizeMsg:
-		a.pickerStyle = a.pickerStyle.Height(msg.Height)
-		a.listStyle = a.listStyle.Height(msg.Height)
+		a.pickerStyle = a.pickerStyle.Height(msg.Height - 4)
+		a.listStyle = a.listStyle.Height(msg.Height - 2)
 
-		a.pickerStyle = a.pickerStyle.Width(msg.Width / 2)
-		a.listStyle = a.listStyle.Width(msg.Width / 2)
+		a.pickerStyle = a.pickerStyle.Width((msg.Width / 2) - 2)
+		a.listStyle = a.listStyle.Width((msg.Width / 2) - 2)
 	case clearErrMsg:
 		a.err = nil
 	}

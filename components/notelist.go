@@ -50,17 +50,20 @@ func (li item) GetId() int {
 }
 
 type NoteList struct {
-	list    list.Model
-	notes   []dstructs.Note
-	input   NoteComponent
-	focused types.BonListMode
-	selNote dstructs.Note
+	list      list.Model
+	notes     []dstructs.Note
+	input     NoteComponent
+	height    int
+	calcWidth func(w int) int
+	focused   types.BonListMode
+	selNote   dstructs.Note
 }
 
 func NewNoteList(
 	notes []dstructs.Note,
 	width int,
 	height int,
+	calcWidth func(w int) int,
 ) NoteList {
 	li := []list.Item{}
 	for _, n := range notes {
@@ -83,7 +86,7 @@ func NewNoteList(
 	l.SetShowHelp(false)
 	l.SetShowStatusBar(false)
 	//TODO change style of selected note
-	l.SetSize(width, height-1)
+	l.SetSize(width, height)
 
 	ft, err := dstructs.NewFTree()
 	if err != nil {
@@ -123,6 +126,8 @@ func (nl NoteList) Update(msg tea.Msg) (NoteList, tea.Cmd) {
 				nl.focused = types.BrowseMode
 			}
 		}
+	case tea.WindowSizeMsg:
+		nl.list.SetSize(nl.calcWidth(msg.Width), msg.Height-1)
 	}
 	var cmd tea.Cmd
 	if nl.focused == types.BrowseMode {
