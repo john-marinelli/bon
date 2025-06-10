@@ -15,10 +15,6 @@ import (
 
 var acStyle lipgloss.Style = lipgloss.NewStyle().Margin(1, 0, 0, 0)
 
-func updateFilesCmd() tea.Msg {
-	return types.UpdateFilesMsg(true)
-}
-
 func noteStatus(dl int) types.NoteStatus {
 	if dl < 1 {
 		return types.AboutToDelete

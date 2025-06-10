@@ -17,27 +17,19 @@ type Note struct {
 }
 
 func SaveNote(path string, content string) error {
-	fPath := "archive/" + path + ".md"
+	fPath := cfg.Config.ArchDir + path + ".md"
 	if path != "" {
 		dPath := filepath.Dir(fPath)
-		if _, err := os.Stat(os.ExpandEnv("$HOME/.bon/" + dPath)); os.IsNotExist(err) {
-			err := os.MkdirAll(os.ExpandEnv("$HOME/.bon/"+dPath), os.ModePerm)
+		if _, err := os.Stat(dPath); os.IsNotExist(err) {
+			err := os.MkdirAll(dPath, os.ModePerm)
 			if err != nil {
 				return err
 			}
 		}
 	}
-	if _, err := os.Stat(os.ExpandEnv("$HOME/.bon/bon.json")); os.IsNotExist(err) {
-		f, err := os.Create(os.ExpandEnv("$HOME/.bon/bon.json"))
-		f.WriteString("[]")
-		f.Close()
-		if err != nil {
-			return err
-		}
-	}
 
 	if path == "" {
-		data, err := os.ReadFile(os.ExpandEnv("$HOME/.bon/bon.json"))
+		data, err := os.ReadFile(cfg.Config.BonFile)
 		if err != nil {
 			return err
 		}
@@ -62,7 +54,7 @@ func SaveNote(path string, content string) error {
 			Id:       id,
 		})
 
-		f, err := os.Create(os.ExpandEnv("$HOME/.bon/bon.json"))
+		f, err := os.Create(cfg.Config.BonFile)
 		defer f.Close()
 		b, err := json.Marshal(notes)
 		if err != nil {
@@ -72,7 +64,7 @@ func SaveNote(path string, content string) error {
 		return err
 	}
 
-	f, err := os.Create(os.ExpandEnv("$HOME/.bon/" + fPath))
+	f, err := os.Create(fPath)
 	if err != nil {
 		return err
 	}
@@ -83,7 +75,7 @@ func SaveNote(path string, content string) error {
 }
 
 func LoadBonNotes() ([]Note, error) {
-	data, err := os.ReadFile(cfg.Config.RootDir + "/bon.json")
+	data, err := os.ReadFile(cfg.Config.BonFile)
 	if err != nil {
 		return nil, err
 	}
@@ -95,7 +87,7 @@ func LoadBonNotes() ([]Note, error) {
 }
 
 func DeleteBonNote(id int) ([]Note, error) {
-	data, err := os.ReadFile(cfg.Config.RootDir + "/bon.json")
+	data, err := os.ReadFile(cfg.Config.BonFile)
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +102,7 @@ func DeleteBonNote(id int) ([]Note, error) {
 		d = append(d, n)
 	}
 
-	f, err := os.Create(cfg.Config.RootDir + "/bon.json")
+	f, err := os.Create(cfg.Config.BonFile)
 	if err != nil {
 		return nil, err
 	}
@@ -126,7 +118,7 @@ func DeleteBonNote(id int) ([]Note, error) {
 }
 
 func LoadAndClearNotes() ([]Note, error) {
-	data, err := os.ReadFile(cfg.Config.RootDir + "/bon.json")
+	data, err := os.ReadFile(cfg.Config.BonFile)
 	if err != nil {
 		return nil, err
 	}
@@ -150,7 +142,7 @@ func LoadAndClearNotes() ([]Note, error) {
 		d = append(d, n)
 	}
 
-	f, err := os.Create(cfg.Config.RootDir + "/bon.json")
+	f, err := os.Create(cfg.Config.BonFile)
 	if err != nil {
 		return nil, err
 	}

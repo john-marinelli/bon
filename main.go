@@ -6,12 +6,14 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/john-marinelli/bon/bon"
+	"github.com/john-marinelli/bon/cfg"
 	"github.com/john-marinelli/bon/util"
 )
 
 func main() {
 	args := os.Args
 	screen, err := util.ParseArgs(args)
+	cfg.Initialize()
 	switch err {
 	case util.ArgNumberErr:
 		fmt.Println(
@@ -29,6 +31,8 @@ func main() {
 	b := bon.NewBon(screen)
 	p := tea.NewProgram(b, tea.WithAltScreen())
 	if _, err := p.Run(); err != nil {
-		panic(err)
+		p.Quit()
+		fmt.Printf("ERROR: %s", err.Error())
+		os.Exit(1)
 	}
 }
