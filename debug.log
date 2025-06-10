@@ -1,0 +1,33 @@
+
+2025/06/03 17:43:33 filetree.go:117: PATH TO OPEN /home/johnm/.bon/archive/another.md
+2025/06/03 17:44:25 filetree.go:119: PATH TO OPEN /home/johnm/.bon/archive/another.md
+2025/06/03 17:44:25 filetree.go:76: PATH /home/johnm/.bon/archive/another.md
+2025/06/03 17:44:25 filetree.go:77: content this is a note for me
+2025/06/03 17:45:31 filetree.go:119: PATH TO OPEN /home/johnm/.bon/archive/another.md
+2025/06/03 17:45:31 filetree.go:76: PATH /home/johnm/.bon/archive/another.md
+2025/06/03 17:45:31 filetree.go:77: content this is a note for me
+2025/06/03 17:47:33 filetree.go:119: PATH TO OPEN /home/johnm/.bon/archive/another.md
+2025/06/03 17:47:33 filetree.go:76: PATH /home/johnm/.bon/archive/another.md
+2025/06/03 17:47:33 filetree.go:77: content this is a note for me
+2025/06/03 17:58:53 filetree.go:119: PATH TO OPEN /home/johnm/.bon/archive/another.md
+2025/06/03 17:58:53 filetree.go:76: PATH /home/johnm/.bon/archive/another.md
+2025/06/03 17:58:53 filetree.go:77: content this is a note for me
+2025/06/03 19:06:02 filetree.go:119: PATH TO OPEN /home/johnm/.bon/archive/another.md
+2025/06/03 19:06:58 filetree.go:119: PATH TO OPEN /home/johnm/.bon/archive/another.md
+2025/06/03 19:22:46 filetree.go:120: PATH TO OPEN /home/johnm/.bon/archive/another.md
+2025/06/03 19:28:18 filetree.go:120: PATH TO OPEN /home/johnm/.bon/archive/another.md
+2025/06/03 20:40:55 filetree.go:120: PATH TO OPEN /home/johnm/.bon/another/one.md
+2025/06/03 20:40:55 noteviewer.go:53: 1
+2025/06/03 20:41:02 filetree.go:120: PATH TO OPEN /home/johnm/.bon/third/test/again.md
+2025/06/03 20:41:02 noteviewer.go:53: 1
+2025/06/03 20:42:02 filetree.go:120: PATH TO OPEN /home/johnm/.bon/archive/another.md
+2025/06/03 20:42:02 noteviewer.go:53: 1
+2025/06/03 20:42:19 filetree.go:120: PATH TO OPEN /home/johnm/.bon/archive/another.md
+2025/06/03 20:42:19 noteviewer.go:53: 1
+2025/06/03 20:48:06 filetree.go:126: PATH TO OPEN /home/johnm/.bon/archive/another/one.md
+2025/06/03 20:48:06 noteviewer.go:53: 1
+2025/06/03 21:05:08 archive.go:128: PATH TO OPEN /home/johnm/.bon/archive/another.md
+2025/06/03 21:05:08 noteviewer.go:53: 1
+2025/06/03 21:10:14 archive.go:126: PATH TO OPEN /home/johnm/.bon/archive/another.md
+2025/06/03 21:23:54 archive.go:136: PATH TO OPEN /home/johnm/.bon/archive/another.md
+2025/06/03 21:39:32 archive.go:138: PATH TO OPEN /home/johnm/.bon/archive/another/one.md
