@@ -12,7 +12,7 @@ import (
 	"github.com/charmbracelet/x/term"
 	"github.com/john-marinelli/bon/cfg"
 	"github.com/john-marinelli/bon/components"
-	"github.com/john-marinelli/bon/dstructs"
+	"github.com/john-marinelli/bon/data"
 	"github.com/john-marinelli/bon/types"
 )
 
@@ -68,7 +68,7 @@ func clearErrAfter(t time.Duration) tea.Cmd {
 	})
 }
 
-func NewBonView(notes []dstructs.Note, err error) BonView {
+func NewBonView(notes []data.Note, err error) BonView {
 	width, height, _ := term.GetSize(uintptr(os.Stdout.Fd()))
 	p := filepicker.New()
 

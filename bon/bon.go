@@ -2,7 +2,7 @@ package bon
 
 import (
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/john-marinelli/bon/dstructs"
+	"github.com/john-marinelli/bon/data"
 	"github.com/john-marinelli/bon/types"
 )
 
@@ -11,7 +11,7 @@ type Bon struct {
 }
 
 func NewBon(screen types.BonScreen) Bon {
-	notes, err := dstructs.LoadAndClearNotes()
+	notes, err := data.LoadAndClearNotes()
 	var m tea.Model
 	if screen == types.InputScreen {
 		m = NewBonInput()

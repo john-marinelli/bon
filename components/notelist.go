@@ -8,14 +8,14 @@ import (
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/john-marinelli/bon/dstructs"
+	"github.com/john-marinelli/bon/data"
 	"github.com/john-marinelli/bon/types"
 	"github.com/john-marinelli/bon/util"
 )
 
 var acStyle lipgloss.Style = lipgloss.NewStyle().Margin(1, 0, 0, 0)
 
-func noteStatus(dl int) types.NoteStatus {
+func noteStatus(dl int) string {
 	if dl < 1 {
 		return types.AboutToDelete
 	}
@@ -51,16 +51,16 @@ func (li item) GetId() int {
 
 type NoteList struct {
 	list      list.Model
-	notes     []dstructs.Note
+	notes     []data.Note
 	input     NoteComponent
 	height    int
 	calcWidth func(w int) int
 	focused   types.BonListMode
-	selNote   dstructs.Note
+	selNote   data.Note
 }
 
 func NewNoteList(
-	notes []dstructs.Note,
+	notes []data.Note,
 	width int,
 	height int,
 	calcWidth func(w int) int,
@@ -88,7 +88,7 @@ func NewNoteList(
 	//TODO change style of selected note
 	l.SetSize(width, height)
 
-	ft, err := dstructs.NewFTree()
+	ft, err := data.NewFTree()
 	if err != nil {
 		panic(err)
 	}
@@ -156,8 +156,8 @@ func (nl NoteList) GetSelectedContent() (string, string, error) {
 }
 
 func (nl NoteList) saveSelected() NoteList {
-	dstructs.SaveNote(nl.input.Text(), nl.selNote.Content)
-	n, err := dstructs.DeleteBonNote(nl.selNote.Id)
+	data.SaveNote(nl.input.Text(), nl.selNote.Content)
+	n, err := data.DeleteBonNote(nl.selNote.Id)
 	if err != nil {
 		panic(err)
 	}
@@ -167,14 +167,10 @@ func (nl NoteList) saveSelected() NoteList {
 }
 
 func (nl NoteList) Saving() bool {
-	if nl.focused == types.SaveMode {
-		return true
-	}
-
-	return false
+	return nl.focused == types.SaveMode
 }
 
-func (nl *NoteList) setItems(notes []dstructs.Note) {
+func (nl *NoteList) setItems(notes []data.Note) {
 	li := []list.Item{}
 	for _, n := range notes {
 		li = append(li, item{

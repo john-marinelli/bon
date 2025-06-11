@@ -1,6 +1,7 @@
 package types
 
-type NoteStatus rune
+import "github.com/charmbracelet/lipgloss"
+
 type InputMode int
 type BonScreen int
 type BonViewMode int
@@ -29,8 +30,8 @@ const (
 	InputScreen BonScreen = 1
 )
 
-const (
-	AboutToDelete NoteStatus = '❌'
-	DayFromDelete NoteStatus = '❗'
-	Safe          NoteStatus = '🟢'
+var (
+	AboutToDelete string = lipgloss.NewStyle().Foreground(lipgloss.Color("#64b579")).Render("○")
+	DayFromDelete string = lipgloss.NewStyle().Foreground(lipgloss.Color("#dbb05a")).Bold(true).Render("!")
+	Safe          string = lipgloss.NewStyle().Foreground(lipgloss.Color("#e84646")).Bold(true).Render("X")
 )

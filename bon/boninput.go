@@ -8,7 +8,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/x/term"
 	"github.com/john-marinelli/bon/components"
-	"github.com/john-marinelli/bon/dstructs"
+	"github.com/john-marinelli/bon/data"
 	"github.com/john-marinelli/bon/types"
 )
 
@@ -26,7 +26,7 @@ const (
 type BonInput struct {
 	inputs  []components.NoteComponent
 	current types.InputMode
-	ft      dstructs.FTree
+	ft      data.FTree
 	err     error
 }
 
@@ -35,7 +35,7 @@ func NewBonInput() BonInput {
 	in := make([]components.NoteComponent, 2)
 	width, height, _ := term.GetSize(uintptr(os.Stdout.Fd()))
 
-	ft, err := dstructs.NewFTree()
+	ft, err := data.NewFTree()
 	bi.err = err
 
 	p := components.NewAutoComplete(ft.AllPaths, width)
@@ -74,7 +74,7 @@ func (bi BonInput) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c":
 			return bi, tea.Quit
 		case "ctrl+s":
-			dstructs.SaveNote(bi.inputs[types.PathInput].Text(), bi.inputs[types.NoteInput].Text())
+			data.SaveNote(bi.inputs[types.PathInput].Text(), bi.inputs[types.NoteInput].Text())
 			if bi.current == types.NoteInput {
 				return bi, tea.Quit
 			}

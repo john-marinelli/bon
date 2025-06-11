@@ -1,4 +1,4 @@
-package dstructs
+package data
 
 import (
 	"os"
