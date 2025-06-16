@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -11,6 +12,9 @@ import (
 )
 
 func main() {
+	logFile, _ := os.OpenFile("bon.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	defer logFile.Close()
+	log.SetOutput(logFile)
 	args := os.Args
 	screen, err := util.ParseArgs(args)
 	cfg.Initialize()

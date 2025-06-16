@@ -50,20 +50,18 @@ func (li item) GetId() int {
 }
 
 type NoteList struct {
-	list      list.Model
-	notes     []data.Note
-	input     NoteComponent
-	height    int
-	calcWidth func(w int) int
-	focused   types.BonListMode
-	selNote   data.Note
+	list    list.Model
+	notes   []data.Note
+	input   AutoComplete
+	height  int
+	focused types.BonListMode
+	selNote data.Note
 }
 
 func NewNoteList(
 	notes []data.Note,
 	width int,
 	height int,
-	calcWidth func(w int) int,
 ) NoteList {
 	li := []list.Item{}
 	for _, n := range notes {
@@ -126,8 +124,6 @@ func (nl NoteList) Update(msg tea.Msg) (NoteList, tea.Cmd) {
 				nl.focused = types.BrowseMode
 			}
 		}
-	case tea.WindowSizeMsg:
-		nl.list.SetSize(nl.calcWidth(msg.Width), msg.Height-1)
 	}
 	var cmd tea.Cmd
 	if nl.focused == types.BrowseMode {
@@ -145,6 +141,15 @@ func (nl NoteList) View() string {
 		nl.list.View(),
 		acStyle.Render(nl.input.View()),
 	)
+}
+
+func (nl NoteList) GetSelectedId() (int, error) {
+	sel, ok := nl.list.SelectedItem().(item)
+	if ok {
+		return sel.GetId(), nil
+	}
+
+	return 0, errors.New("failed to get id from selected note")
 }
 
 func (nl NoteList) GetSelectedContent() (string, string, error) {

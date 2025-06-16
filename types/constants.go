@@ -18,6 +18,7 @@ const (
 	PickerMode BonViewMode = 0
 	ListMode   BonViewMode = 1
 	ViewerMode BonViewMode = 2
+	EditorMode BonViewMode = 3
 )
 
 const (

@@ -34,7 +34,7 @@ func (a AutoComplete) Init() tea.Cmd {
 	return textinput.Blink
 }
 
-func (a AutoComplete) Update(msg tea.Msg) (NoteComponent, tea.Cmd) {
+func (a AutoComplete) Update(msg tea.Msg) (AutoComplete, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		a.textInput.Width = msg.Width
@@ -48,12 +48,12 @@ func (a AutoComplete) View() string {
 	return a.textInput.View()
 }
 
-func (a AutoComplete) Blur() NoteComponent {
+func (a AutoComplete) Blur() AutoComplete {
 	a.textInput.Blur()
 	return a
 }
 
-func (a AutoComplete) Focus() NoteComponent {
+func (a AutoComplete) Focus() AutoComplete {
 	a.textInput.Focus()
 	return a
 }
@@ -62,7 +62,7 @@ func (a AutoComplete) Text() string {
 	return a.textInput.Value()
 }
 
-func (a AutoComplete) Clear() NoteComponent {
+func (a AutoComplete) Clear() AutoComplete {
 	a.textInput.SetValue("")
 
 	return a

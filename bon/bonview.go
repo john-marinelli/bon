@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/charmbracelet/bubbles/filepicker"
+	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/x/term"
@@ -50,6 +51,8 @@ type BonView struct {
 	pickerStyle lipgloss.Style
 	viewer      components.NoteViewer
 	list        components.NoteList
+	editor      components.Editor
+	editing     bool
 	listStyle   lipgloss.Style
 	noteList    components.NoteList
 	focused     types.BonViewMode
@@ -81,14 +84,23 @@ func NewBonView(notes []data.Note, err error) BonView {
 	p.Styles.Directory = lipgloss.NewStyle().Foreground(lipgloss.Color("#779ed1"))
 
 	v := components.NewNoteViewer()
+	pickerKm := filepicker.DefaultKeyMap()
+	pickerKm.Select = key.NewBinding(
+		key.WithKeys("ctrl+e", "enter"),
+	)
+	pickerKm.Open = key.NewBinding(
+		key.WithKeys("ctrl+e", "enter", "l", "right"),
+	)
+	p.KeyMap = pickerKm
 
-	nl := components.NewNoteList(notes, (width/2)-2, height, func(w int) int {
-		return (w / 2) - 2
-	})
+	e := components.NewEditor()
+
+	nl := components.NewNoteList(notes, (width/2)-2, height)
 
 	arch := BonView{
 		picker:      p,
 		viewer:      v,
+		editor:      e,
 		baseDir:     cfg.Config.ArchDir,
 		list:        nl,
 		focused:     types.PickerMode,
@@ -126,6 +138,23 @@ func (a BonView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+a", "1":
 			if a.focused == types.ListMode {
 				a.focused = types.PickerMode
+			}
+		case "ctrl+e":
+			if a.focused == types.ListMode && !a.list.Saving() {
+				id, err := a.list.GetSelectedId()
+				if err != nil {
+					a.err = err
+					return a, nil
+				}
+				_, note, err := a.list.GetSelectedContent()
+				if err != nil {
+					a.err = err
+					return a, nil
+				}
+				a.focused = types.EditorMode
+				cmd := a.editor.OpenBon(id, note)
+				a.focused = types.ListMode
+				return a, cmd
 			}
 		case "enter":
 			if a.focused == types.ListMode && !a.list.Saving() {
@@ -175,9 +204,17 @@ func (a BonView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		a.viewer, cmd = a.viewer.Update(msg)
 	case types.ListMode:
 		a.list, cmd = a.list.Update(msg)
+	case types.EditorMode:
+		return a, nil
 	}
 
 	if didSelect, path := a.picker.DidSelectFile(msg); didSelect {
+		switch msg := msg.(type) {
+		case tea.KeyMsg:
+			if msg.String() == "ctrl+e" {
+				return a, a.editor.Open(path, types.ViewScreen)
+			}
+		}
 		cnt, err := a.openSelected(path)
 		if err != nil {
 			a.err = err
@@ -254,4 +291,8 @@ func (a BonView) openSelected(path string) (string, error) {
 	}
 
 	return string(f), nil
+}
+
+func (a *BonView) setEditing(e bool) {
+	a.editing = true
 }

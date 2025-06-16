@@ -12,11 +12,13 @@ type BonConfig struct {
 	ArchDir string
 	BonFile string
 	BonCfg  string
+	Editor  string
 	MaxDays int `json:"max_note_days"`
 }
 
 var Config *BonConfig = &BonConfig{
 	MaxDays: 7,
+	Editor:  "lvim",
 }
 
 func Initialize() {

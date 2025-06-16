@@ -16,35 +16,25 @@ var pathBorder = lipgloss.NewStyle().Border(lipgloss.ASCIIBorder())
 
 type errMsg error
 
-type NoteInputState int
-
-const (
-	PathInput = iota
-	NoteInput
-)
-
 type BonInput struct {
-	inputs  []components.NoteComponent
-	current types.InputMode
-	ft      data.FTree
-	err     error
+	pathInput components.AutoComplete
+	teaProg   *tea.Program
+	editor    components.Editor
+	ft        data.FTree
+	err       error
 }
 
 func NewBonInput() BonInput {
 	bi := BonInput{}
-	in := make([]components.NoteComponent, 2)
-	width, height, _ := term.GetSize(uintptr(os.Stdout.Fd()))
+	width, _, _ := term.GetSize(uintptr(os.Stdout.Fd()))
 
 	ft, err := data.NewFTree()
 	bi.err = err
 
 	p := components.NewAutoComplete(ft.AllPaths, width)
-	in[types.PathInput] = p
+	bi.pathInput = p
 
-	ni := components.NewNoteInput(width, height, 3)
-	in[types.NoteInput] = ni
-
-	bi.inputs = in
+	bi.editor = components.NewEditor()
 
 	return bi
 }
@@ -54,43 +44,36 @@ func (bi BonInput) Init() tea.Cmd {
 }
 
 func (bi BonInput) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	var cmd tea.Cmd
+
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		for i := range bi.inputs {
-			bi.inputs[i], _ = bi.inputs[i].Update(msg)
-		}
 	case errMsg:
 		bi.err = msg
 		return bi, nil
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "enter":
-			if bi.current == types.PathInput {
-				bi.inputs[bi.current] = bi.inputs[bi.current].Blur()
-				bi.current = types.NoteInput
-				bi.inputs[bi.current] = bi.inputs[bi.current].Focus()
-				return bi, nil
-			}
+			cmd = bi.editor.Open(bi.pathInput.Text(), types.InputScreen)
+			return bi, cmd
 		case "ctrl+c":
 			return bi, tea.Quit
-		case "ctrl+s":
-			data.SaveNote(bi.inputs[types.PathInput].Text(), bi.inputs[types.NoteInput].Text())
-			if bi.current == types.NoteInput {
-				return bi, tea.Quit
-			}
 		}
+	case components.EditorDoneMsg:
+		if msg.Err != nil {
+			fmt.Println(msg.Err.Error())
+		}
+		return bi, tea.Quit
 	}
 
-	bi.inputs[bi.current], _ = bi.inputs[bi.current].Update(msg)
+	bi.pathInput, cmd = bi.pathInput.Update(msg)
 
-	return bi, nil
+	return bi, cmd
 }
 
 func (bi BonInput) View() string {
 	return fmt.Sprintf(
-		"%s%s%s",
-		bi.inputs[types.PathInput].View(),
-		"\n",
-		bi.inputs[types.NoteInput].View(),
+		"%s",
+		bi.pathInput.View(),
 	)
 }

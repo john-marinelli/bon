@@ -2,6 +2,7 @@ package data
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"time"
@@ -115,6 +116,39 @@ func DeleteBonNote(id int) ([]Note, error) {
 	f.Write(b)
 
 	return d, nil
+}
+
+func EditBonNote(id int, content string) error {
+	data, err := os.ReadFile(cfg.Config.BonFile)
+	if err != nil {
+		return err
+	}
+	notes := []Note{}
+
+	json.Unmarshal(data, &notes)
+	d := []Note{}
+	for i := range notes {
+		if notes[i].Id == id {
+			notes[i].Content = content
+		}
+	}
+
+	fmt.Println(notes)
+
+	f, err := os.Create(cfg.Config.BonFile)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	b, err := json.Marshal(d)
+	if err != nil {
+		return err
+	}
+	f.Write(b)
+
+	return nil
+
 }
 
 func LoadAndClearNotes() ([]Note, error) {
